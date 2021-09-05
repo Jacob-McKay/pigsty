@@ -1,0 +1,10 @@
+/node_modules
+/coverage
+/.nyc_output
+/.jest-cache
+.DS_Store
+*.log
+.idea
+.vscode
+.cache
+.eslintcache
