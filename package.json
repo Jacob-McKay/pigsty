@@ -17,7 +17,6 @@
     "webpack-dev-middleware": "^5.0.0"
   },
   "dependencies": {
-    "simplex-noise": "^3.0.0",
-    "snapsvg": "^0.5.1"
+    "simplex-noise": "^3.0.0"
   }
 }
