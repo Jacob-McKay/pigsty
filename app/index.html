@@ -23,12 +23,16 @@
     <div class="container">
         <h1>Flip the bird, one day</h1>
         <div class="row">
-            <label for="x-range" class="form-label">Pick seed for the x-axis noise function</label>
-            <input type="range" class="form-range" id="x-range">
+            <label for="noise-seed" class="form-label">Pick seed for the noise function</label>
+            <input type="range" class="form-range" id="noise-seed" min="-50" max="50" step="1" value="0">
         </div>
         <div class="row">
-            <label for="x-noise" class="form-label">Noise Value</label>
-            <input type="range" class="form-range" id="x-noise" min="-1" max="1" step="0.001">
+            <label for="x-noise" class="form-label">X Noise Value</label>
+            <input type="range" class="form-range" id="x-noise" min="-1" max="1" step="0.001" value="0">
+        </div>
+        <div class="row">
+            <label for="y-noise" class="form-label">Y Noise Value</label>
+            <input type="range" class="form-range" id="y-noise" min="-1" max="1" step="0.001" value="0">
         </div>
         <div class="render-area-ctn">
             <svg class="render-area" viewBox="0 0 200 100">

@@ -53,22 +53,69 @@ var circle = svg
 const simplex = new SimplexNoise();
 
 // TODO try out 3D and 4D noise funcs
+// Question:  why isn't there a 1D noise function?  Is that a stupid question?
 
 document
-    .querySelector('#x-range')
+    .querySelector('#noise-seed')
     .addEventListener('change', (event) => {
         let input = event.target as any;
         console.log('new xrange value: ' + input.value);
     });
 
-let xNoiseSlider = document.querySelector('#x-noise') as any;
-let t = 0;
-let tDelta = 0.001;
-setInterval(() => {
-    xNoiseSlider.value = simplex.noise2D(t += tDelta, 0);
-}, 1000 / 60); // 60 frames per second
 
+letErRip();
 
+function letErRip() {
+    let noiseSeedSlider = document.querySelector('#noise-seed') as any;
+    let xNoiseSlider = document.querySelector('#x-noise') as any;
+    let yNoiseSlider = document.querySelector('#y-noise') as any;
+
+    let t = 0;
+    let xNoiseOffset = t + parseInt(noiseSeedSlider.value);
+    let yNoiseOffset = t - parseInt(noiseSeedSlider.value);
+
+    let framesPerSecond = 60;
+    let intervalBetweenFrames = 1000 / framesPerSecond;
+
+    let walkerDots = [] as Snap.Element[];
+    let maxWalkerDots = framesPerSecond * 10;
+    let walkerDotsIndex = 0;
+
+    let tDelta = 0.001;
+    setInterval(() => {
+        let xNoiseLatest = simplex.noise2D(xNoiseOffset += tDelta, 0);
+        let yNoiseLatest = simplex.noise2D(0, yNoiseOffset += tDelta);
+
+        console.log({ xNoiseLatest, yNoiseLatest });
+
+        xNoiseSlider.value = xNoiseLatest;
+        yNoiseSlider.value = yNoiseLatest;
+
+        let walkerDotX = remapRange(xNoiseLatest, -1, 1, 0, width);
+        let walkerDotY = remapRange(yNoiseLatest, -1, 1, 0, height);
+
+        walkerDotsIndex = walkerDotsIndex % maxWalkerDots;
+        let alreadyDrawnWalkerDot = walkerDots[walkerDotsIndex];
+
+        if (alreadyDrawnWalkerDot) {
+            alreadyDrawnWalkerDot.remove();
+        }
+
+        var walkerDot = svg
+            .circle(walkerDotX, walkerDotY, 2.5)
+            .attr({
+                'stroke': 'red',
+                'stroke-width': '1',
+                'fill': 'none'
+            });
+
+        walkerDots[walkerDotsIndex] = walkerDot;
+
+        walkerDotsIndex++;
+    }, intervalBetweenFrames);
+}
+
+const remapRange = (value: number, x1: number, y1: number, x2: number, y2: number) => (value - x1) * (y2 - x2) / (y1 - x1) + x2;
 
 
 
