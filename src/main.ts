@@ -7,72 +7,41 @@ var width = svgElement.viewBox.baseVal.width;
 var height = svgElement.viewBox.baseVal.height;
 
 let svg = Snap('.render-area');
-let border = svg
-    .polyline([
-        0, 0,
-        0, height,
-        width, height,
-        width, 0,
-        0, 0])
-    .attr({
-        'stroke': 'black',
-        'stroke-width': '1',
-        'fill': 'none'
-    });
 
+let runningInterval: NodeJS.Timer;
 
-for (var x = 0; x < horiztonalGridTicks; x++) {
-    var verticalOffset = (height / horiztonalGridTicks) * x;
-    let horizontalGridline = svg
-        .line(0, verticalOffset, width, verticalOffset)
-        .attr({
-            'stroke': 'green',
-            'stroke-width': '1'
-        });
+function restart() {
+    runningInterval = letErRip(runningInterval);
 }
 
-for (var y = 0; y < verticalGridTicks; y++) {
-    var horizontalOffset = (width / verticalGridTicks) * y;
-    let verticalGridline = svg
-        .line(horizontalOffset, 0, horizontalOffset, height)
-        .attr({
-            'stroke': 'green',
-            'stroke-width': '1'
-        });
-}
-
-
-var circle = svg
-    .circle(50, 50, 50)
-    .attr({
-        'stroke': 'grey',
-        'stroke-width': '1',
-        'fill': 'none'
-    });
-
-const simplex = new SimplexNoise();
-
-// TODO try out 3D and 4D noise funcs
-// Question:  why isn't there a 1D noise function?  Is that a stupid question?
+restart();
 
 document
     .querySelector('#noise-seed')
     .addEventListener('change', (event) => {
-        let input = event.target as any;
-        console.log('new xrange value: ' + input.value);
+        restart();
     });
 
+document
+    .querySelector('#speed')
+    .addEventListener('change', (event) => {
+        restart();
+    });
 
-letErRip();
+function letErRip(alreadyRunningInterval?: NodeJS.Timer) {
+    if (alreadyRunningInterval) {
+        clearInterval(alreadyRunningInterval);
+    }
+    svg.clear();
+    drawGridlines();
 
-function letErRip() {
     let noiseSeedSlider = document.querySelector('#noise-seed') as any;
     let xNoiseSlider = document.querySelector('#x-noise') as any;
     let yNoiseSlider = document.querySelector('#y-noise') as any;
 
     let t = 0;
-    let xNoiseOffset = t + parseInt(noiseSeedSlider.value);
-    let yNoiseOffset = t - parseInt(noiseSeedSlider.value);
+    let tx = t + parseInt(noiseSeedSlider.value);
+    let ty = t - parseInt(noiseSeedSlider.value);
 
     let framesPerSecond = 60;
     let intervalBetweenFrames = 1000 / framesPerSecond;
@@ -81,12 +50,13 @@ function letErRip() {
     let maxWalkerDots = framesPerSecond * 10;
     let walkerDotsIndex = 0;
 
-    let tDelta = 0.001;
-    setInterval(() => {
-        let xNoiseLatest = simplex.noise2D(xNoiseOffset += tDelta, 0);
-        let yNoiseLatest = simplex.noise2D(0, yNoiseOffset += tDelta);
+    const simplex = new SimplexNoise(noiseSeedSlider);
 
-        console.log({ xNoiseLatest, yNoiseLatest });
+    let speedSlider = document.querySelector('#speed') as any;
+    let tDelta = parseFloat(speedSlider.value)
+    return setInterval(() => {
+        let xNoiseLatest = simplex.noise2D(tx += tDelta, 0);
+        let yNoiseLatest = simplex.noise2D(0, ty += tDelta);
 
         xNoiseSlider.value = xNoiseLatest;
         yNoiseSlider.value = yNoiseLatest;
@@ -118,7 +88,41 @@ function letErRip() {
 const remapRange = (value: number, x1: number, y1: number, x2: number, y2: number) => (value - x1) * (y2 - x2) / (y1 - x1) + x2;
 
 
+function drawGridlines() {
+    let border = svg
+        .polyline([
+            0, 0,
+            0, height,
+            width, height,
+            width, 0,
+            0, 0])
+        .attr({
+            'stroke': 'black',
+            'stroke-width': '1',
+            'fill': 'none'
+        });
 
+
+    for (var x = 0; x < horiztonalGridTicks; x++) {
+        var verticalOffset = (height / horiztonalGridTicks) * x;
+        let horizontalGridline = svg
+            .line(0, verticalOffset, width, verticalOffset)
+            .attr({
+                'stroke': 'green',
+                'stroke-width': '1'
+            });
+    }
+
+    for (var y = 0; y < verticalGridTicks; y++) {
+        var horizontalOffset = (width / verticalGridTicks) * y;
+        let verticalGridline = svg
+            .line(horizontalOffset, 0, horizontalOffset, height)
+            .attr({
+                'stroke': 'green',
+                'stroke-width': '1'
+            });
+    }
+}
 
 
 

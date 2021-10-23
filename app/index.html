@@ -24,7 +24,11 @@
         <h1>Flip the bird, one day</h1>
         <div class="row">
             <label for="noise-seed" class="form-label">Pick seed for the noise function</label>
-            <input type="range" class="form-range" id="noise-seed" min="-50" max="50" step="1" value="0">
+            <input type="range" class="form-range" id="noise-seed" min="-49" max="49" step="1" value="1">
+        </div>
+        <div class="row">
+            <label for="speed" class="form-label">Speed up or slowdown the simulation</label>
+            <input type="range" class="form-range" id="speed" min="0.00001" max="0.1" step="0.0001" value="0.02">
         </div>
         <div class="row">
             <label for="x-noise" class="form-label">X Noise Value</label>
@@ -34,6 +38,12 @@
             <label for="y-noise" class="form-label">Y Noise Value</label>
             <input type="range" class="form-range" id="y-noise" min="-1" max="1" step="0.001" value="0">
         </div>
+        <br />
+        <h2 style="text-align: center;">
+            <div>
+                Path Generator
+            </div>
+        </h2>
         <div class="render-area-ctn">
             <svg class="render-area" viewBox="0 0 200 100">
 
