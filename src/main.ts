@@ -1,12 +1,12 @@
 import SimplexNoise from 'simplex-noise';
 
-var svgElement = document.querySelector('.render-area') as any;
+var svgElement = document.querySelector('#path-render-area') as any;
 var horiztonalGridTicks = 8;
 var verticalGridTicks = 16;
 var width = svgElement.viewBox.baseVal.width;
 var height = svgElement.viewBox.baseVal.height;
 
-let svg = Snap('.render-area');
+let svg = Snap(svgElement);
 
 let runningInterval: NodeJS.Timer;
 
