@@ -1,4 +1,5 @@
 import SimplexNoise from 'simplex-noise';
+import { MyElement } from './components/my-element';
 
 var svgElement = document.querySelector('#path-render-area') as any;
 var horiztonalGridTicks = 8;
@@ -53,7 +54,8 @@ function letErRip(alreadyRunningInterval?: NodeJS.Timer) {
     const simplex = new SimplexNoise(noiseSeedSlider);
 
     let speedSlider = document.querySelector('#speed') as any;
-    let tDelta = parseFloat(speedSlider.value)
+    let tDelta = parseFloat(speedSlider.value);
+
     return setInterval(() => {
         let xNoiseLatest = simplex.noise2D(tx += tDelta, 0);
         let yNoiseLatest = simplex.noise2D(0, ty += tDelta);
@@ -124,9 +126,9 @@ function drawGridlines() {
     }
 }
 
-
-
-
+let customEle = document.createElement('my-element');
+console.log({ customEle });
+document.querySelector('#custom-ele-ctn').append(customEle);
 
 
 

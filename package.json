@@ -17,6 +17,7 @@
     "webpack-dev-middleware": "^5.0.0"
   },
   "dependencies": {
+    "lit": "^2.0.2",
     "simplex-noise": "^3.0.0"
   }
 }
