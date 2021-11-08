@@ -4,8 +4,11 @@ var webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
-  entry: ['./src/main.ts'],
-  devtool: 'inline-source-map',
+  entry: {
+    main: './src/main.ts',
+    components: './src/components/index.ts',
+  },
+   devtool: 'inline-source-map',
   mode: 'development',
   module: {
     rules: [
@@ -19,10 +22,13 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js']
   },
+  externals: {
+    snapsvg: 'Snap',
+  }, 
   output: {
     path: path.join(__dirname, 'app'),
     publicPath: '/',
-    filename: 'dist/bundle.js'
+    filename: 'dist/[name].bundle.js',
   },
   plugins: [new webpack.NoEmitOnErrorsPlugin()],
 };

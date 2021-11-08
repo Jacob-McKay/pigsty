@@ -4,8 +4,8 @@
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "sourceMap": true,
-    "module": "es6",
-    "target": "es5",
+    "target": "es2017",
+    "module": "es2015",
     "allowJs": true,
     "moduleResolution": "node",
     "experimentalDecorators": true
