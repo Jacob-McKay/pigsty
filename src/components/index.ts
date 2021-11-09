@@ -1,3 +1,2 @@
-import { MyElement } from "./my-element";
-import { SvgGrid } from './svg-grid';
-console.log('Webpack sux? ', !!MyElement && !!SvgGrid);
+import './my-element';
+import './svg-grid';
