@@ -18,7 +18,10 @@
   },
   "dependencies": {
     "@shoelace-style/shoelace": "^2.0.0-beta.60",
+    "copy-webpack-plugin": "^9.1.0",
+    "css-loader": "^6.5.1",
     "lit": "^2.0.2",
+    "mini-css-extract-plugin": "^2.4.4",
     "simplex-noise": "^3.0.0",
     "snapsvg": "^0.5.1"
   }

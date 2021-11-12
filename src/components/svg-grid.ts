@@ -76,7 +76,7 @@ export class SvgGrid extends LitElement {
 
     override updated(changes: any) {
         console.log({ changes });
-        let svg = this.children[0] as SVGElement;
+        let svg = this.shadowRoot.children[0] as SVGElement;
         this._snapSvgElement = Snap(svg);
         this._drawGridlines();
     }
