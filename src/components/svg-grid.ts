@@ -15,6 +15,13 @@ export class SvgGrid extends LitElement {
 
     private _togglingCells = false;
 
+    static get properties() {
+        return { cells: { type: Object } };
+    }
+
+    @property({ type: String })
+    public name: string;
+
     @property({ type: Boolean })
     public clickable = false;
 
@@ -24,6 +31,15 @@ export class SvgGrid extends LitElement {
     @property({ type: Number })
     public yTicks = 8;
 
+    set cells(val: boolean[][]) {
+        let oldVal = this._cells;
+        this._cells = val
+        this.requestUpdate('cells', oldVal);
+    }
+
+    get cells() { return this._cells; }
+
+    private _cells: boolean[][];
     private _snapSvgElement: Snap.Paper;
 
     private get _svgWidth() {
@@ -34,6 +50,7 @@ export class SvgGrid extends LitElement {
 
         return 100 * ratio;
     }
+
     private get _svgHeight() {
         let ratio = 1;
         if (this.yTicks >= this.xTicks) {
@@ -58,7 +75,8 @@ export class SvgGrid extends LitElement {
     }
 
     override updated(changes: any) {
-        let svg = this.shadowRoot.children[0] as SVGElement;
+        console.log({ changes });
+        let svg = this.children[0] as SVGElement;
         this._snapSvgElement = Snap(svg);
         this._drawGridlines();
     }
@@ -67,14 +85,13 @@ export class SvgGrid extends LitElement {
         this._togglingCells = false;
     }
 
-    private _onCellMouseDown(cell: Snap.Element) {
-        console.log('on mouse down this?', this);
+    private _onCellMouseDown(cell: Snap.Element, columnIndex: number, rowIndex: number) {
         this._togglingCells = true;
-        this._toggleCell(cell);
+        this._toggleCell(cell, columnIndex, rowIndex);
     }
 
-    private _onCellMouseOver(cell: Snap.Element) {
-        this._toggleCell(cell);
+    private _onCellMouseOver(cell: Snap.Element, columnIndex: number, rowIndex: number) {
+        this._toggleCell(cell, columnIndex, rowIndex);
     }
 
     disconnectedCallback() {
@@ -82,18 +99,24 @@ export class SvgGrid extends LitElement {
         //TODO unregister event listeners on SVG Elements?
     }
 
-    private _toggleCell(cell: Snap.Element) {
+    private _toggleCell(cell: Snap.Element, columnIndex: number, rowIndex: number) {
         if (!this._togglingCells) {
             return;
         }
+        let toggled = this._cells[columnIndex][rowIndex];
+        toggled = !toggled;
+        this._cells[columnIndex][rowIndex] = toggled;
 
-        let cellToggled = cell.data('toggled');
-
-        cellToggled = !cellToggled;
         cell.attr({
-            fillOpacity: cellToggled ? 1 : 0
-        })
-            .data('toggled', cellToggled);
+            fillOpacity: toggled ? 1 : 0
+        });
+
+        let event = new CustomEvent('cells-updated', {
+            detail: {
+                cell: this._cells
+            }
+        });
+        this.dispatchEvent(event);
     }
 
     private _drawGridlines() {
@@ -132,29 +155,29 @@ export class SvgGrid extends LitElement {
                 });
         }
 
-        if (!this.clickable) {
-            return;
-        }
-
+        this._cells = [];
         for (let col = 0; col < this.xTicks; col++) {
+            this._cells.push([]);
             let column = this._snapSvgElement.group();
 
             for (let row = 0; row < this.yTicks; row++) {
+                this._cells[col][row] = false;
                 let cell = column
                     .rect(col * cellWidth, row * cellHeight, cellWidth, cellHeight, 2, 2)
                     .attr({
                         fill: 'green',
                         fillOpacity: '0'
                     })
-                    .data('toggled', false);
 
-                cell.mousedown((e: MouseEvent) => {
-                    this._onCellMouseDown(cell);
-                });
+                if (this.clickable) {
+                    cell.mousedown(() => {
+                        this._onCellMouseDown(cell, col, row);
+                    });
 
-                cell.mouseover((e: MouseEvent) => {
-                    this._onCellMouseOver(cell);
-                });
+                    cell.mouseover(() => {
+                        this._onCellMouseOver(cell, col, row);
+                    });
+                }
             }
         }
     }

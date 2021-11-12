@@ -1,2 +1,3 @@
-import './my-element';
 import './svg-grid';
+import './obstacle-library';
+import './MyElement';
