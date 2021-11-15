@@ -40,6 +40,7 @@ export class SvgGrid extends LitElement {
     get cells() { return this._cells; }
 
     private _cells: boolean[][];
+    private _svgCells: Snap.Element[][];
     private _snapSvgElement: Snap.Paper;
 
     private get _svgWidth() {
@@ -68,17 +69,44 @@ export class SvgGrid extends LitElement {
 
     override render() {
         return html`
-            <svg @mouseup=${this._onMouseUp} 
+            <svg @mouseup=${this._onMouseUp}
                  viewBox="0 0 ${this._svgWidth} ${this._svgHeight}">
             </svg>
         `;
     }
 
-    override updated(changes: any) {
-        console.log({ changes });
+    override firstUpdated(changes: Map<string, any>) {
+        console.log(`grid ${this.name} firstUpdated()`, { changes });
         let svg = this.shadowRoot.children[0] as SVGElement;
         this._snapSvgElement = Snap(svg);
-        this._drawGridlines();
+
+        let cellsKnown = changes.has('cells');
+        this._drawGridlines(cellsKnown);
+
+        if (cellsKnown) {
+            this._initCells();
+        }
+    }
+
+    override updated(changes: Map<string, any>) {
+        console.log(`grid ${this.name} updated(): `, { changes });
+        if (changes.has('cells')) {
+            this._initCells();
+        }
+    }
+
+    private _initCells() {
+        console.log(`grid ${this.name} initcells(): `, this.xTicks, this.yTicks, this._cells);
+
+        for (let col = 0; col < this.xTicks; col++) {
+            for (let row = 0; row < this.yTicks; row++) {
+
+                let cell = this._svgCells[col][row];
+                cell.attr({
+                    fillOpacity: this._cells[col][row] ? 1 : 0
+                });
+            }
+        }
     }
 
     private _onMouseUp(e: MouseEvent) {
@@ -119,7 +147,9 @@ export class SvgGrid extends LitElement {
         this.dispatchEvent(event);
     }
 
-    private _drawGridlines() {
+    private _drawGridlines(cellsKnown: boolean) {
+        console.log(`grid ${this.name} _drawGridlines(): `, this._cells);
+
         let border = this._snapSvgElement
             .polyline([
                 0, 0,
@@ -130,7 +160,8 @@ export class SvgGrid extends LitElement {
             .attr({
                 'stroke': 'black',
                 'stroke-width': '1',
-                'fill': 'none'
+                'fill': 'none',
+                'name': 'border'
             });
         let cellWidth = this._svgWidth / this.xTicks;
         let cellHeight = this._svgHeight / this.yTicks;
@@ -155,19 +186,32 @@ export class SvgGrid extends LitElement {
                 });
         }
 
-        this._cells = [];
+        // TODO maybe one day give a shit about someone changing the grid dimensions after the fact
+
+        if (!cellsKnown) {
+            this._cells = [];
+        }
+        this._svgCells = [];
         for (let col = 0; col < this.xTicks; col++) {
-            this._cells.push([]);
+            if (!cellsKnown) {
+                this._cells.push([]);
+            }
+
+            this._svgCells.push([]);
             let column = this._snapSvgElement.group();
 
             for (let row = 0; row < this.yTicks; row++) {
-                this._cells[col][row] = false;
+                if (!cellsKnown) {
+                    this._cells[col][row] = false;
+                }
+                
                 let cell = column
                     .rect(col * cellWidth, row * cellHeight, cellWidth, cellHeight, 2, 2)
                     .attr({
                         fill: 'green',
                         fillOpacity: '0'
-                    })
+                    });
+                this._svgCells[col][row] = cell;
 
                 if (this.clickable) {
                     cell.mousedown(() => {

@@ -36,7 +36,7 @@ export class ObstacleLibrary extends LitElement {
         super();
         this.storeName = 'ObstacleLibrary';
         this._library = {
-            'meng': []
+            'meng': undefined
         }
     }
 
@@ -58,9 +58,9 @@ export class ObstacleLibrary extends LitElement {
     override render() {
         return html`
             <div class="buttons">
-                <sl-button type="primary" @click=${this._addObstacle}>Add Obstacle</sl-button>
+                <sl-button @click=${this._addObstacle}>Add Obstacle</sl-button>
                 <sl-button type="primary" @click=${this._saveObstacles}>Save Obstacles</sl-button>
-                <sl-button type="primary" @click=${this._restoreObstacles}>Restore Obstacles</sl-button>
+                <sl-button type="warning" @click=${this._restoreObstacles}>Restore Obstacles</sl-button>
             </div>
             <div class="library">
                 ${this._renderObstacles()}
@@ -69,15 +69,21 @@ export class ObstacleLibrary extends LitElement {
     }
 
     override firstUpdated(changes: any) {
-        console.log('changes?', changes);
     }
 
     private _addObstacle(e: MouseEvent) {
-        this._library[new Date().getTime().toString()] = [];
+        console.log('_addObstacle()');
+        this._library[new Date().getTime().toString()] = undefined;
         this.requestUpdate();
     }
 
     private _saveObstacles(e: MouseEvent) {
+        let newLibrary = {} as Record<string, boolean[][]>;;
+        this.shadowRoot.querySelectorAll('svg-grid').forEach(grid => {
+            newLibrary[grid.name] = grid.cells;
+        });
+
+        this._library = newLibrary;
         localStorage.setItem(this.storeName, JSON.stringify(this._library));
     }
 
