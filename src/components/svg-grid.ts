@@ -76,7 +76,6 @@ export class SvgGrid extends LitElement {
     }
 
     override firstUpdated(changes: Map<string, any>) {
-        console.log(`grid ${this.name} firstUpdated()`, { changes });
         let svg = this.shadowRoot.children[0] as SVGElement;
         this._snapSvgElement = Snap(svg);
 
@@ -89,15 +88,12 @@ export class SvgGrid extends LitElement {
     }
 
     override updated(changes: Map<string, any>) {
-        console.log(`grid ${this.name} updated(): `, { changes });
         if (changes.has('cells')) {
             this._initCells();
         }
     }
 
     private _initCells() {
-        console.log(`grid ${this.name} initcells(): `, this.xTicks, this.yTicks, this._cells);
-
         for (let col = 0; col < this.xTicks; col++) {
             for (let row = 0; row < this.yTicks; row++) {
 
@@ -148,8 +144,6 @@ export class SvgGrid extends LitElement {
     }
 
     private _drawGridlines(cellsKnown: boolean) {
-        console.log(`grid ${this.name} _drawGridlines(): `, this._cells);
-
         let border = this._snapSvgElement
             .polyline([
                 0, 0,
@@ -204,7 +198,7 @@ export class SvgGrid extends LitElement {
                 if (!cellsKnown) {
                     this._cells[col][row] = false;
                 }
-                
+
                 let cell = column
                     .rect(col * cellWidth, row * cellHeight, cellWidth, cellHeight, 2, 2)
                     .attr({
