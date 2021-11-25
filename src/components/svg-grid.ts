@@ -137,7 +137,7 @@ export class SvgGrid extends LitElement {
 
         let event = new CustomEvent('cells-updated', {
             detail: {
-                cell: this._cells
+                cells: this._cells
             }
         });
         this.dispatchEvent(event);

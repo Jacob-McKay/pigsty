@@ -36,7 +36,7 @@ export class ObstacleLibrary extends LitElement {
         super();
         this.storeName = 'ObstacleLibrary';
         this._library = {
-            'meng': undefined
+            'meng': this._initEmptyCellsForGrid()
         }
     }
 
@@ -49,7 +49,11 @@ export class ObstacleLibrary extends LitElement {
             });
             return obstacles.map(obstacle => {
                 return html`<div class="svg-grid-ctn">
-                                <svg-grid name="${obstacle.name}" .cells="${obstacle.cells}" ?clickable="${true}"></svg-grid>
+                                <svg-grid 
+                                    name="${obstacle.name}" 
+                                    .cells="${obstacle.cells}" 
+                                    ?clickable="${true}"
+                                    @cells-updated=${this._updateCells}></svg-grid>
                             </div>`
             });
         }
@@ -61,6 +65,7 @@ export class ObstacleLibrary extends LitElement {
                 <sl-button @click=${this._addObstacle}>Add Obstacle</sl-button>
                 <sl-button type="primary" @click=${this._saveObstacles}>Save Obstacles</sl-button>
                 <sl-button type="warning" @click=${this._restoreObstacles}>Restore Obstacles</sl-button>
+                <sl-button type="success" @click=${this._checkObstacles}>Check Obstacles</sl-button>
             </div>
             <div class="library">
                 ${this._renderObstacles()}
@@ -71,9 +76,13 @@ export class ObstacleLibrary extends LitElement {
     override firstUpdated(changes: any) {
     }
 
+    private _updateCells(cellsUpdatedEvent: CustomEvent) {
+        this._library[(cellsUpdatedEvent.target as any).name] = cellsUpdatedEvent.detail.cells;
+    }
+
     private _addObstacle(e: MouseEvent) {
         console.log('_addObstacle()');
-        this._library[new Date().getTime().toString()] = undefined;
+        this._library[new Date().getTime().toString()] = this._initEmptyCellsForGrid();
         this.requestUpdate();
     }
 
@@ -91,6 +100,46 @@ export class ObstacleLibrary extends LitElement {
         let savedLibrary = localStorage.getItem(this.storeName);
         this._library = JSON.parse(savedLibrary);
         this.requestUpdate();
+    }
+
+    private _checkObstacles() {
+        if (Object.keys(this._library).length === 0) {
+            alert('All Clear!');
+            return;
+        }
+        let obstacleNames = Object.keys(this._library);
+
+        let noObstacleExistsAtPotentialPath = false;
+        let columns = this._library[obstacleNames[0]].length;
+        let rows = this._library[obstacleNames[0]][0].length;
+
+        for (let col = 0; col < columns; col++) {
+            for (let row = 0; row < rows; row++) {
+                let foundObstacleOpeningAtPath =
+                    obstacleNames.find(obstacleName => {
+                        let obstacle = this._library[obstacleName];
+                        return obstacle[col][row] === false;
+                    });
+                if (!foundObstacleOpeningAtPath) {
+                    alert(`No obstacle allowing flight thru path [col:${col}][row:${row}]`);
+                }
+            }
+        }
+
+        alert('checks completed!');
+    }
+
+    private _initEmptyCellsForGrid() {
+        let columns = [];
+        for (let col = 0; col < 16; col++) {
+            let column = [] as boolean[];
+            for (let row = 0; row < 8; row++) {
+                column[row] = false;                
+            }
+            columns.push(column);
+        }
+
+        return columns;
     }
 }
 
