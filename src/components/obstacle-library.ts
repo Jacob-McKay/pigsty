@@ -1,5 +1,6 @@
 import { html, css, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { initIndexedObstacles, Obstacle } from '../logic/obstacles';
 
 @customElement('obstacle-library')
 export class ObstacleLibrary extends LitElement {
@@ -32,9 +33,13 @@ export class ObstacleLibrary extends LitElement {
     @property({ type: String })
     public storeName: string;
 
+    @property({ type: Boolean })
+    public autoRestore: boolean;
+
     constructor() {
         super();
         this.storeName = 'ObstacleLibrary';
+        this.autoRestore = true;
         this._library = {
             'meng': this._initEmptyCellsForGrid()
         }
@@ -66,6 +71,7 @@ export class ObstacleLibrary extends LitElement {
                 <sl-button type="primary" @click=${this._saveObstacles}>Save Obstacles</sl-button>
                 <sl-button type="warning" @click=${this._restoreObstacles}>Restore Obstacles</sl-button>
                 <sl-button type="success" @click=${this._checkObstacles}>Check Obstacles</sl-button>
+                <sl-button type="success" @click=${this._indexObstacles}>Index Obstacles</sl-button>
             </div>
             <div class="library">
                 ${this._renderObstacles()}
@@ -74,19 +80,22 @@ export class ObstacleLibrary extends LitElement {
     }
 
     override firstUpdated(changes: any) {
+        if (this.autoRestore) {
+            this._restoreObstacles();
+        }
     }
 
     private _updateCells(cellsUpdatedEvent: CustomEvent) {
         this._library[(cellsUpdatedEvent.target as any).name] = cellsUpdatedEvent.detail.cells;
     }
 
-    private _addObstacle(e: MouseEvent) {
+    private _addObstacle() {
         console.log('_addObstacle()');
         this._library[new Date().getTime().toString()] = this._initEmptyCellsForGrid();
         this.requestUpdate();
     }
 
-    private _saveObstacles(e: MouseEvent) {
+    private _saveObstacles() {
         let newLibrary = {} as Record<string, boolean[][]>;;
         this.shadowRoot.querySelectorAll('svg-grid').forEach(grid => {
             newLibrary[grid.name] = grid.cells;
@@ -96,8 +105,11 @@ export class ObstacleLibrary extends LitElement {
         localStorage.setItem(this.storeName, JSON.stringify(this._library));
     }
 
-    private _restoreObstacles(e: MouseEvent) {
+    private _restoreObstacles() {
         let savedLibrary = localStorage.getItem(this.storeName);
+        if (!savedLibrary) {
+            return;
+        }
         this._library = JSON.parse(savedLibrary);
         this.requestUpdate();
     }
@@ -129,12 +141,22 @@ export class ObstacleLibrary extends LitElement {
         alert('checks completed!');
     }
 
+    private _indexObstacles() {
+        let obstacles = [] as Obstacle[];
+        Object.keys(this._library).forEach(obstacleName => {
+            obstacles.push({ name: obstacleName, cells: this._library[obstacleName] });
+        });
+        let indexedObstacles = initIndexedObstacles(obstacles);
+
+        console.log({ indexedObstacles });
+    }
+
     private _initEmptyCellsForGrid() {
         let columns = [];
         for (let col = 0; col < 16; col++) {
             let column = [] as boolean[];
             for (let row = 0; row < 8; row++) {
-                column[row] = false;                
+                column[row] = false;
             }
             columns.push(column);
         }
