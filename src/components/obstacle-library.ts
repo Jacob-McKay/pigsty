@@ -151,6 +151,10 @@ export class ObstacleLibrary extends LitElement {
         console.log({ indexedObstacles });
     }
 
+    public getObstacles() {
+        return this._indexObstacles();
+    }
+
     private _initEmptyCellsForGrid() {
         let columns = [];
         for (let col = 0; col < 16; col++) {

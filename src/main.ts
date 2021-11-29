@@ -36,6 +36,9 @@ function letErRip(alreadyRunningInterval?: NodeJS.Timer) {
     svg.clear();
     drawGridlines();
 
+    let obstacleLibrary = document.querySelector('obstacle-library');
+    let obstacles = obstacleLibrary.getObstacles();
+
     let noiseSeedSlider = document.querySelector('#noise-seed') as any;
     let xNoiseSlider = document.querySelector('#x-noise') as any;
     let yNoiseSlider = document.querySelector('#y-noise') as any;

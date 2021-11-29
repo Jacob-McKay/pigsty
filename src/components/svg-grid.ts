@@ -4,14 +4,11 @@ import Snap from 'snapsvg';
 
 @customElement('svg-grid')
 export class SvgGrid extends LitElement {
-    //     static override styles = css`
-    //         :host {
-    //             display: block;
-    //             border: solid 1px gray;
-    //             padding: 16px;
-    //             max-width: 800px;
-    //         }
-    //   `;
+    static override styles = css`
+            :host {
+                opacity: 1;
+            }
+      `;
 
     private _togglingCells = false;
 
@@ -99,7 +96,7 @@ export class SvgGrid extends LitElement {
 
                 let cell = this._svgCells[col][row];
                 cell.attr({
-                    fillOpacity: this._cells[col][row] ? 1 : 0
+                    fill: this._cells[col][row] ? 'green' : 'white'
                 });
             }
         }
@@ -132,7 +129,7 @@ export class SvgGrid extends LitElement {
         this._cells[columnIndex][rowIndex] = toggled;
 
         cell.attr({
-            fillOpacity: toggled ? 1 : 0
+            fill: toggled ? 'green' : 'white'
         });
 
         let event = new CustomEvent('cells-updated', {
@@ -200,10 +197,9 @@ export class SvgGrid extends LitElement {
                 }
 
                 let cell = column
-                    .rect(col * cellWidth, row * cellHeight, cellWidth, cellHeight, 2, 2)
+                    .rect((col * cellWidth) + 0.5, (row * cellHeight) + 0.5, cellWidth - 1 , cellHeight -1, 0, 0)
                     .attr({
-                        fill: 'green',
-                        fillOpacity: '0'
+                        fill: 'white'
                     });
                 this._svgCells[col][row] = cell;
 
