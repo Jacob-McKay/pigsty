@@ -149,6 +149,7 @@ export class ObstacleLibrary extends LitElement {
         let indexedObstacles = initIndexedObstacles(obstacles);
 
         console.log({ indexedObstacles });
+        return indexedObstacles;
     }
 
     public getObstacles() {
