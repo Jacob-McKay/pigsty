@@ -26,8 +26,26 @@ export class ObstacleLibrary extends LitElement {
             .buttons sl-button {
                 padding: 10px;
             }
+
+            @keyframes highlight {
+                0% {
+                    background-color: white;
+                }
+                100% {
+                    background-color: yellow
+                }
+            }
+
+            .highlight {
+                animation-name: highlight;
+                animation-duration: 0.5s;
+                animation-direction: alternate;
+                animation-iteration-count: 2;
+                animation-timing-function: ease-out;
+            }
         `;
     }
+
     private _library: Record<string, boolean[][]>;
 
     @property({ type: String })
@@ -148,12 +166,24 @@ export class ObstacleLibrary extends LitElement {
         });
         let indexedObstacles = initIndexedObstacles(obstacles);
 
-        console.log({ indexedObstacles });
         return indexedObstacles;
     }
 
     public getObstacles() {
         return this._indexObstacles();
+    }
+
+    public highlightObstacle(obstacleName: string) {
+        let obstacleToHighlight = this.shadowRoot.querySelector(`svg-grid[name="${obstacleName}"]`);
+        if (obstacleToHighlight) {
+            obstacleToHighlight = obstacleToHighlight.parentElement;
+            obstacleToHighlight.classList.remove('highlight');
+            setTimeout(() => {
+                obstacleToHighlight.classList.add('highlight');
+            }, 0);
+        }
+
+        let otherHighlighteds
     }
 
     private _initEmptyCellsForGrid() {

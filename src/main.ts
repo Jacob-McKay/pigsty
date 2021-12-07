@@ -71,8 +71,12 @@ function letErRip(alreadyRunningInterval?: NodeJS.Timer) {
 
         let pathCellIndexX = Math.floor(remapRange(xNoiseLatest, -1, 1, 0, 15));
         let pathCellIndexY = Math.floor(remapRange(xNoiseLatest, -1, 1, 0, 7));
-        let openObstacleAtPath = obstacles[90][pathCellIndexX][pathCellIndexY];
-        console.log({ openObstacleAtPath });
+        let openObstaclesAtPath = obstacles[90][pathCellIndexX][pathCellIndexY];
+
+        if (openObstaclesAtPath[0]) {
+            obstacleLibrary.highlightObstacle(openObstaclesAtPath[0].name);
+        }
+
         walkerDotsIndex = walkerDotsIndex % maxWalkerDots;
         let alreadyDrawnWalkerDot = walkerDots[walkerDotsIndex];
 
