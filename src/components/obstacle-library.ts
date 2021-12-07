@@ -27,21 +27,8 @@ export class ObstacleLibrary extends LitElement {
                 padding: 10px;
             }
 
-            @keyframes highlight {
-                0% {
-                    background-color: white;
-                }
-                100% {
-                    background-color: yellow
-                }
-            }
-
             .highlight {
-                animation-name: highlight;
-                animation-duration: 0.5s;
-                animation-direction: alternate;
-                animation-iteration-count: 2;
-                animation-timing-function: ease-out;
+                background-color: yellow;
             }
         `;
     }
@@ -108,7 +95,6 @@ export class ObstacleLibrary extends LitElement {
     }
 
     private _addObstacle() {
-        console.log('_addObstacle()');
         this._library[new Date().getTime().toString()] = this._initEmptyCellsForGrid();
         this.requestUpdate();
     }
@@ -177,13 +163,14 @@ export class ObstacleLibrary extends LitElement {
         let obstacleToHighlight = this.shadowRoot.querySelector(`svg-grid[name="${obstacleName}"]`);
         if (obstacleToHighlight) {
             obstacleToHighlight = obstacleToHighlight.parentElement;
-            obstacleToHighlight.classList.remove('highlight');
-            setTimeout(() => {
-                obstacleToHighlight.classList.add('highlight');
-            }, 0);
+            obstacleToHighlight.classList.add('highlight');
         }
 
-        let otherHighlighteds
+        let otherHighlightedObstacles = [...this.shadowRoot
+            .querySelectorAll('.svg-grid-ctn.highlight')]
+            .filter(highlightedObstacle => highlightedObstacle != obstacleToHighlight);
+
+        otherHighlightedObstacles.forEach(highlightedObstacle => highlightedObstacle.classList.remove('highlight'));
     }
 
     private _initEmptyCellsForGrid() {
