@@ -175,7 +175,7 @@ export class ObstacleLibrary extends LitElement {
 
     private _initEmptyCellsForGrid() {
         let columns = [];
-        for (let col = 0; col < 16; col++) {
+        for (let col = 0; col < 18; col++) {
             let column = [] as boolean[];
             for (let row = 0; row < 8; row++) {
                 column[row] = false;

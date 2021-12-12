@@ -23,7 +23,7 @@ export class SvgGrid extends LitElement {
     public clickable = false;
 
     @property({ type: Number })
-    public xTicks = 16;
+    public xTicks = 18;
 
     @property({ type: Number })
     public yTicks = 8;
@@ -60,7 +60,7 @@ export class SvgGrid extends LitElement {
 
     constructor() {
         super();
-        this.xTicks = 16
+        this.xTicks = 18
         this.yTicks = 8;
     }
 

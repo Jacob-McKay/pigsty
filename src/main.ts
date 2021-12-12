@@ -3,7 +3,7 @@ import Snap from 'snapsvg';
 
 var svgElement = document.querySelector('#path-render-area') as any;
 var horiztonalGridTicks = 8;
-var verticalGridTicks = 16;
+var verticalGridTicks = 18;
 var width = svgElement.viewBox.baseVal.width;
 var height = svgElement.viewBox.baseVal.height;
 
