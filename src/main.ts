@@ -18,16 +18,8 @@ function restart() {
 restart();
 
 document
-    .querySelector('#noise-seed')
-    .addEventListener('change', (event) => {
-        restart();
-    });
-
-document
-    .querySelector('#speed')
-    .addEventListener('change', (event) => {
-        restart();
-    });
+    .querySelectorAll('#noise-seed, #speed, #resolution')
+    .forEach(uiControl => uiControl.addEventListener('change', restart));
 
 function letErRip(alreadyRunningInterval?: NodeJS.Timer) {
     if (alreadyRunningInterval) {
@@ -47,7 +39,8 @@ function letErRip(alreadyRunningInterval?: NodeJS.Timer) {
     let tx = t + parseInt(noiseSeedSlider.value);
     let ty = t - parseInt(noiseSeedSlider.value);
 
-    let framesPerSecond = 60;
+    let speedSlider = document.querySelector('#speed') as any;
+    let framesPerSecond = speedSlider.value;
     let intervalBetweenFrames = 1000 / framesPerSecond;
 
     let walkerDots = [] as Snap.Element[];
@@ -56,8 +49,8 @@ function letErRip(alreadyRunningInterval?: NodeJS.Timer) {
 
     const simplex = new SimplexNoise(noiseSeedSlider);
 
-    let speedSlider = document.querySelector('#speed') as any;
-    let tDelta = parseFloat(speedSlider.value);
+    let resolutionSlider = document.querySelector('#resolution') as any;
+    let tDelta = parseFloat(resolutionSlider.value);
 
     return setInterval(() => {
         let xNoiseLatest = simplex.noise2D(tx += tDelta, 0);
