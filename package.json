@@ -7,6 +7,7 @@
   },
   "author": "moobz",
   "devDependencies": {
+    "@types/seedrandom": "^3.0.1",
     "@types/snapsvg": "^0.5.1",
     "browser-sync": "^2.8.0",
     "bs-fullscreen-message": "^1.0.0",

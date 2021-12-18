@@ -1,5 +1,8 @@
 import SimplexNoise from 'simplex-noise';
 import Snap from 'snapsvg';
+import * as srandom from 'seedrandom';
+
+var rng = srandom('turdly_turden');
 
 var svgElement = document.querySelector('#path-render-area') as any;
 var horiztonalGridTicks = 8;
@@ -66,8 +69,10 @@ function letErRip(alreadyRunningInterval?: NodeJS.Timer) {
         let pathCellIndexY = Math.floor(remapRange(xNoiseLatest, -1, 1, 0, 7));
         let openObstaclesAtPath = obstacles[90][pathCellIndexX][pathCellIndexY];
 
-        if (openObstaclesAtPath[0]) {
-            obstacleLibrary.highlightObstacle(openObstaclesAtPath[0].name);
+        if (openObstaclesAtPath.length > 0) {
+            let obstacleIndex = Math.round(remapRange(rng.quick(), 0, 1, 0, openObstaclesAtPath.length));
+            console.log(obstacleIndex);
+            obstacleLibrary.highlightObstacle(openObstaclesAtPath[obstacleIndex].name);
         }
 
         walkerDotsIndex = walkerDotsIndex % maxWalkerDots;
