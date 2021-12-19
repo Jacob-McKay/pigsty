@@ -70,8 +70,7 @@ function letErRip(alreadyRunningInterval?: NodeJS.Timer) {
         let openObstaclesAtPath = obstacles[90][pathCellIndexX][pathCellIndexY];
 
         if (openObstaclesAtPath.length > 0) {
-            let obstacleIndex = Math.round(remapRange(rng.quick(), 0, 1, 0, openObstaclesAtPath.length));
-            console.log(obstacleIndex);
+            let obstacleIndex = Math.round(remapRange(rng.quick(), 0, 1, 0, openObstaclesAtPath.length -1 ));
             obstacleLibrary.highlightObstacle(openObstaclesAtPath[obstacleIndex].name);
         }
 
