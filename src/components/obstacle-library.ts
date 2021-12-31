@@ -137,24 +137,32 @@ export class ObstacleLibrary extends LitElement {
         }
         let obstacleNames = Object.keys(this._library);
 
-        let noObstacleExistsAtPotentialPath = false;
         let columns = this._library[obstacleNames[0]].length;
         let rows = this._library[obstacleNames[0]][0].length;
 
         for (let col = 0; col < columns; col++) {
             for (let row = 0; row < rows; row++) {
-                let foundObstacleOpeningAtPath =
-                    obstacleNames.find(obstacleName => {
-                        let obstacle = this._library[obstacleName];
-                        return obstacle[col][row] === false;
-                    });
-                if (!foundObstacleOpeningAtPath) {
-                    alert(`No obstacle allowing flight thru path [col:${col}][row:${row}]`);
+
+                let obstaclesOpenAtPath = obstacleNames.filter(obstacleName => {
+                    return this._library[obstacleName][col][row] === false;
+                });
+
+                let obstaclesClosedAtPath = obstacleNames.filter(obstacleName => {
+                    return this._library[obstacleName][col][row] === true;
+                });
+
+                let totalNumberOfObstacles = obstacleNames.length;
+                if (obstaclesClosedAtPath.length === totalNumberOfObstacles) {
+                    console.warn(`No obstacle allowing flight thru path [col:${col}][row:${row}]`);
+                }
+
+                if (obstaclesOpenAtPath.length === totalNumberOfObstacles) {
+                    console.warn(`All obstacles allow flight thru path [col:${col}][row:${row}]`);
                 }
             }
         }
 
-        alert('checks completed!');
+        alert('All Checks completed, check console for issues');
     }
 
     private _indexObstacles() {
