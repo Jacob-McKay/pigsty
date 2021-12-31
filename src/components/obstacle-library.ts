@@ -15,7 +15,8 @@ export class ObstacleLibrary extends LitElement {
 
             .svg-grid-ctn {
                 width: 400px;
-                padding: 10px;
+                padding: 10px 10px 20px;
+                text-align: center;
             }
 
             .buttons {
@@ -55,15 +56,26 @@ export class ObstacleLibrary extends LitElement {
             return html`<p>nuthin here yet</p>`;
         } else {
             let obstacles = Object.keys(this._library).map(obstacleName => {
-                return { name: obstacleName, cells: this._library[obstacleName] };
+                let cells = this._library[obstacleName];
+                let filledCells = cells.reduce((runningFilledCount, currentColumn) => {
+                    return runningFilledCount + currentColumn.filter(cellFilled => cellFilled).length;
+                }, 0);
+
+                return { name: obstacleName, cells, difficulty: filledCells / cells.length };
             });
-            return obstacles.map(obstacle => {
+
+            obstacles.sort((a, b) => {
+                return a.difficulty - b.difficulty;
+            });
+
+            return obstacles.map((obstacle, index) => {
                 return html`<div class="svg-grid-ctn">
                                 <svg-grid 
                                     name="${obstacle.name}" 
                                     .cells="${obstacle.cells}" 
                                     ?clickable="${true}"
                                     @cells-updated=${this._updateCells}></svg-grid>
+                                    <div class="obstacle-title">${index}: ${obstacle.name}</div>
                             </div>`
             });
         }
