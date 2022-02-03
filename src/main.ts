@@ -66,7 +66,7 @@ function letErRip(alreadyRunningInterval?: NodeJS.Timer) {
         let walkerDotY = remapRange(yNoiseLatest, -1, 1, 0, height);
 
         let pathCellIndexX = Math.floor(remapRange(xNoiseLatest, -1, 1, 0, 15));
-        let pathCellIndexY = Math.floor(remapRange(xNoiseLatest, -1, 1, 0, 7));
+        let pathCellIndexY = Math.floor(remapRange(yNoiseLatest, -1, 1, 0, 7));
         let openObstaclesAtPath = obstacles[90][pathCellIndexX][pathCellIndexY];
 
         if (openObstaclesAtPath.length > 0) {
