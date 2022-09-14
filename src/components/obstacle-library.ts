@@ -22,6 +22,7 @@ export class ObstacleLibrary extends LitElement {
             .buttons {
                 display: flex;
                 justify-content: center;
+                flex-wrap: wrap;
             }
 
             .buttons sl-button {
@@ -85,10 +86,11 @@ export class ObstacleLibrary extends LitElement {
         return html`
             <div class="buttons">
                 <sl-button @click=${this._addObstacle}>Add Obstacle</sl-button>
-                <sl-button type="primary" @click=${this._saveObstacles}>Save Obstacles</sl-button>
-                <sl-button type="warning" @click=${this._restoreObstacles}>Restore Obstacles</sl-button>
-                <sl-button type="success" @click=${this._checkObstacles}>Check Obstacles</sl-button>
-                <sl-button type="success" @click=${this._indexObstacles}>Index Obstacles</sl-button>
+                <sl-button @click=${this._saveObstacles}>Save Obstacles</sl-button>
+                <sl-button @click=${this._restoreObstacles}>Restore Obstacles</sl-button>
+                <sl-button @click=${this._checkObstacles}>Check Obstacles</sl-button>
+                <sl-button @click=${this._indexObstacles}>Index Obstacles</sl-button>
+                <sl-button @click=${this._exportObstacles}>Export Obstacles</sl-button>
             </div>
             <div class="library">
                 ${this._renderObstacles()}
@@ -173,6 +175,17 @@ export class ObstacleLibrary extends LitElement {
         let indexedObstacles = initIndexedObstacles(obstacles);
 
         return indexedObstacles;
+    }
+
+    private _exportObstacles() {
+        let myModalEl = document.querySelector('#exportObstacleJsonModal');
+        let modal = (window as any)
+            .bootstrap.Modal.getOrCreateInstance(myModalEl) // Returns a Bootstrap modal instance
+        modal.show();
+
+        let indexedObstacles = this._indexObstacles();
+        let outputTextArea =  document.querySelector('#exportObstacleJson') as HTMLTextAreaElement
+        outputTextArea.value = JSON.stringify(indexedObstacles);
     }
 
     public getObstacles() {

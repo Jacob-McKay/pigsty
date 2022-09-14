@@ -1,6 +1,6 @@
 export type Cells = boolean[][];
 export type Obstacle = { name: string, cells: Cells };
-export type IndexedObstacles = Record<number, Array<Array<Array<Obstacle>>>>;
+export type IndexedObstacles = Record<number, Array<Array<Array<string>>>>;
 
 export const initIndexedObstacles = (obstacles: Obstacle[]) => {
     let indexedObstacles = {} as IndexedObstacles;
@@ -16,7 +16,7 @@ export const initIndexedObstacles = (obstacles: Obstacle[]) => {
                     return obstacle.difficulty <= difficultyIncrement;
                 }).map(obstacleDifficulty => obstacleDifficulty.osbtacle);
 
-        indexedObstacles[difficultyIncrement] = [] as Array<Array<Array<Obstacle>>>;
+        indexedObstacles[difficultyIncrement] = [] as Array<Array<Array<string>>>;
 
         for (let col = 0; col < numColumns; col++) {
             indexedObstacles[difficultyIncrement][col] = [];
@@ -24,7 +24,7 @@ export const initIndexedObstacles = (obstacles: Obstacle[]) => {
                 indexedObstacles[difficultyIncrement][col][row] = [];
                 obstaclesWithinDifficulty.forEach(obstacle => {
                     if (!obstacle.cells[col][row]) {
-                        indexedObstacles[difficultyIncrement][col][row].push(obstacle);
+                        indexedObstacles[difficultyIncrement][col][row].push(obstacle.name);
                     }
                 });
             }
