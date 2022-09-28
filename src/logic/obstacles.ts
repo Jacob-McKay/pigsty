@@ -18,20 +18,6 @@ export const initIndexedObstacles = (obstacles: Obstacle[]): IndexedObstacles =>
         indexedObstacles.obstacles[obstacle.name] = obstacle.cells
             .map(col => col.map(row => row ? 1 : 0)));
 
-    // for (let obsI = 0; obsI < obstacles.length; obsI++) {
-    //     let obstacle = obstacles[obsI];
-    //     indexedObstacles.obstacles[obstacle.name] = obstacle.cells
-    //         .map(col => col.map(row => row ? 1 : 0));
-
-    // for (let colI = 0; colI < obstacles[obsI].cells.length; colI++) {
-    //     indexedObstacles.obstacles[obstacle.name].push([]);
-    //     for (let rowI = 0; rowI < obstacles[obsI].cells[colI].length; rowI++) {
-    //         let serializedRowOfCells = obstacles[obsI].cells[colI].map(cell => cell ? 1 : 0);
-    //         indexedObstacles.obstacles[obstacles[obsI].name][colI] = serializedRowOfCells;
-    //     }
-    // }
-    // }
-
     let obstaclesSortedByDifficulty = getSortedObstaclesByDifficulty(obstacles);
 
     let numColumns = obstacles[0].cells.length;
