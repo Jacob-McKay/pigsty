@@ -67,7 +67,7 @@ function letErRip(alreadyRunningInterval?: NodeJS.Timer) {
 
         let pathCellIndexX = Math.floor(remapRange(xNoiseLatest, -1, 1, 0, 17));
         let pathCellIndexY = Math.floor(remapRange(yNoiseLatest, -1, 1, 0, 7));
-        let openObstaclesAtPath = obstacles.index[90][pathCellIndexX][pathCellIndexY];
+        let openObstaclesAtPath = obstacles.index[10][pathCellIndexX][pathCellIndexY];
 
         if (openObstaclesAtPath.length > 0) {
             let obstacleIndex = Math.round(remapRange(rng.quick(), 0, 1, 0, openObstaclesAtPath.length -1 ));

@@ -8,7 +8,6 @@ export type IndexedObstacles = {
 };
 
 export const initIndexedObstacles = (obstacles: Obstacle[]): IndexedObstacles => {
-
     let indexedObstacles = {
         obstacles: {},
         index: {} as ObstacleIndexByDifficultyThenPos
@@ -23,22 +22,26 @@ export const initIndexedObstacles = (obstacles: Obstacle[]): IndexedObstacles =>
     let numColumns = obstacles[0].cells.length;
     let numRows = obstacles[0].cells[0].length;
 
-    for (let difficultyIncrement = 10; difficultyIncrement < 100; difficultyIncrement += 10) {
+    let difficultyIncrement = 10;
+    for (let difficultyBucketFloor = 0; difficultyBucketFloor <= 40; difficultyBucketFloor += difficultyIncrement) {
         let obstaclesWithinDifficulty =
             obstaclesSortedByDifficulty
                 .filter(obstacle => {
-                    return obstacle.difficulty <= difficultyIncrement;
+                    return obstacle.difficulty >= difficultyBucketFloor
+                        && obstacle.difficulty < difficultyBucketFloor + difficultyIncrement;
                 }).map(obstacleDifficulty => obstacleDifficulty.osbtacle);
 
-        indexedObstacles.index[difficultyIncrement] = [] as Array<Array<Array<string>>>;
+        obstaclesWithinDifficulty.forEach(obstacle => console.log(`Obstacle ${obstacle.name} is within difficulty bucket ${difficultyBucketFloor}-${difficultyBucketFloor + difficultyIncrement}`));
+
+        indexedObstacles.index[difficultyBucketFloor] = [] as Array<Array<Array<string>>>;
 
         for (let col = 0; col < numColumns; col++) {
-            indexedObstacles.index[difficultyIncrement][col] = [];
+            indexedObstacles.index[difficultyBucketFloor][col] = [];
             for (let row = 0; row < numRows; row++) {
-                indexedObstacles.index[difficultyIncrement][col][row] = [];
+                indexedObstacles.index[difficultyBucketFloor][col][row] = [];
                 obstaclesWithinDifficulty.forEach(obstacle => {
                     if (!obstacle.cells[col][row]) {
-                        indexedObstacles.index[difficultyIncrement][col][row].push(obstacle.name);
+                        indexedObstacles.index[difficultyBucketFloor][col][row].push(obstacle.name);
                     }
                 });
             }
