@@ -33,8 +33,6 @@ export const initIndexedObstacles = (obstacles: Obstacle[]): IndexedObstacles =>
                 })
                 .map(obstacleDifficulty => obstacleDifficulty.osbtacle);
 
-        obstaclesWithinDifficulty.forEach(obstacle => console.log(`Obstacle ${obstacle.name} is within difficulty bucket ${difficultyBucketFloor}-${difficultyBucketFloor + difficultyIncrement}`));
-
         indexedObstacles.index[difficultyBucketFloor] = [] as Array<Array<Array<string>>>;
 
         for (let col = 0; col < numColumns; col++) {
