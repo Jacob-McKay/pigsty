@@ -27,9 +27,11 @@ export const initIndexedObstacles = (obstacles: Obstacle[]): IndexedObstacles =>
         let obstaclesWithinDifficulty =
             obstaclesSortedByDifficulty
                 .filter(obstacle => {
-                    return obstacle.difficulty >= difficultyBucketFloor
-                        && obstacle.difficulty < difficultyBucketFloor + difficultyIncrement;
-                }).map(obstacleDifficulty => obstacleDifficulty.osbtacle);
+                    return obstacle.difficulty <= difficultyBucketFloor + difficultyIncrement;
+                }).sort((obsA, obsB) => {
+                    return obsB.difficulty - obsA.difficulty;
+                })
+                .map(obstacleDifficulty => obstacleDifficulty.osbtacle);
 
         obstaclesWithinDifficulty.forEach(obstacle => console.log(`Obstacle ${obstacle.name} is within difficulty bucket ${difficultyBucketFloor}-${difficultyBucketFloor + difficultyIncrement}`));
 
